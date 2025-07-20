@@ -6,18 +6,16 @@ module History = struct
       match Int.compare a c with 0 -> Int.compare b d | x -> x
   end)
 
-  type t = int History_Map.t
+  type t = { map : int History_Map.t; counter : int }
 
-  let empty = History_Map.empty
-  let innov_counter = ref 0
+  let empty = { map = History_Map.empty; counter = 0 }
 
-  let innov i_id o_id h =
-    match History_Map.find_opt (i_id, o_id) h with
-    | Some i -> (i, h)
+  let innov i_id o_id { map; counter } =
+    match History_Map.find_opt (i_id, o_id) map with
+    | Some i -> (i, { map; counter })
     | None ->
-        let i = !innov_counter in
-        innov_counter := i + 1;
-        (i, History_Map.add (i_id, o_id) i h)
+        let i = counter + 1 in
+        (i, { map = History_Map.add (i_id, o_id) i map; counter = i })
 end
 
 module Genome = struct
@@ -64,17 +62,29 @@ module Genome = struct
     }
 
   let mut_add_node g h =
-    let innov, c =
-      List.nth
-        (Genome_Map.bindings g.connections)
-        (Random.int (Genome_Map.cardinal g.connections))
+    let r = Random.int (Genome_Map.cardinal g.connections) in
+    let innov, c, _ =
+      Genome_Map.fold
+        (fun i c (pi, pc, n) ->
+          if n = r then (i, c, n + 1) else (pi, pc, n + 1))
+        g.connections
+        (0, snd (Genome_Map.choose g.connections), 0)
     in
     let n = Node.init Node.Hidden in
     let id = Node.get_id n in
     let nodes = Genome_Map.add id n g.nodes in
-    let connections = Genome_Map.add innov (Connection.toggle c) g.connections in
-    g
-  (* let c = Genome_Map.(g.connections |> add_connection ) *)
+    let i_id = Connection.get_i_id c in
+    let o_id = Connection.get_o_id c in
+    let i_innov, h = History.innov i_id id h in
+    let o_innov, h = History.innov id o_id h in
+    let connections =
+      g.connections
+      |> Genome_Map.add innov (Connection.toggle c)
+      |> Genome_Map.add i_innov (Connection.init i_id id i_innov)
+      |> Genome_Map.add o_innov
+           (Connection.init ~weight:(Connection.get_weight c) id o_id o_innov)
+    in
+    ({ g with nodes; connections }, h)
 
   let mut_add_conn g = g
 end
@@ -106,9 +116,9 @@ let init ?(bias = true) i_count o_count g_count =
   in
   { genomes = List.init g_count (fun _ -> Genome.copy gn); history }
 
-let mutate g =
+let mutate g h =
   Genome.(
     let g = if Random.int 5 < 4 then mutate_weights g else g in
-    let g = if Random.int 100 < 3 then mut_add_node g else g in
+    let g, h = if Random.int 100 < 3 then mut_add_node g h else (g, h) in
     let g = if Random.int 20 < 1 then mut_add_conn g else g in
     g)
