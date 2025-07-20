@@ -6,18 +6,16 @@ module History = struct
       match Int.compare a c with 0 -> Int.compare b d | x -> x
   end)
 
-  type t = int History_Map.t
+  type t = { map : int History_Map.t; counter : int }
 
-  let empty = History_Map.empty
-  let innov_counter = ref 0
+  let empty = { map = History_Map.empty; counter = 0 }
 
-  let innov i_id o_id h =
-    match History_Map.find_opt (i_id, o_id) h with
-    | Some i -> (i, h)
+  let innov i_id o_id { map; counter } =
+    match History_Map.find_opt (i_id, o_id) map with
+    | Some i -> (i, { map; counter })
     | None ->
-        let i = !innov_counter in
-        innov_counter := i + 1;
-        (i, History_Map.add (i_id, o_id) i h)
+        let i = counter + 1 in
+        (i, { map = History_Map.add (i_id, o_id) i map; counter = i })
 end
 
 module Genome = struct
@@ -121,6 +119,6 @@ let init ?(bias = true) i_count o_count g_count =
 let mutate g h =
   Genome.(
     let g = if Random.int 5 < 4 then mutate_weights g else g in
-    let g = if Random.int 100 < 3 then mut_add_node g h else (g, h) in
+    let g, h = if Random.int 100 < 3 then mut_add_node g h else (g, h) in
     let g = if Random.int 20 < 1 then mut_add_conn g else g in
     g)
