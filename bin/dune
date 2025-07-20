@@ -1,0 +1,4 @@
+(executable
+ (public_name neat)
+ (name main)
+ (libraries neat))
