@@ -1,5 +1,3 @@
 (library
  (name neat)
- (libraries
-   connection
-   node))
+ (libraries))

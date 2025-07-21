@@ -13,88 +13,173 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /Users/nicholascho/.opam/default/bin/ocamlc.opt -config > /var/folders/k3/kcj73b_s61n0jnzm2rdrdtv40000gn/T/dune_eb71db_output
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/node/.node.objs/byte -no-alias-deps -opaque -o lib/node/.node.objs/byte/node.cmi -c -intf lib/node/node.mli)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/connection/.connection.objs/byte -no-alias-deps -opaque -o lib/connection/.connection.objs/byte/connection.cmi -c -intf lib/connection/connection.mli)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/node/.node.objs/byte -intf-suffix .ml -no-alias-deps -opaque -o lib/node/.node.objs/byte/node.cmo -c -impl lib/node/node.ml)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -I lib/connection/.connection.objs/byte -I lib/node/.node.objs/byte -no-alias-deps -opaque -o lib/.neat.objs/byte/neat.cmi -c -intf lib/neat.mli)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/connection/.connection.objs/byte -intf-suffix .ml -no-alias-deps -opaque -o lib/connection/.connection.objs/byte/connection.cmo -c -impl lib/connection/connection.ml)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/node/node.cma lib/node/.node.objs/byte/node.cmo)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/connection/connection.cma lib/connection/.connection.objs/byte/connection.cmo)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I bin/.main.eobjs/byte -I lib/.neat.objs/byte -I lib/connection/.connection.objs/byte -I lib/node/.node.objs/byte -no-alias-deps -opaque -o bin/.main.eobjs/byte/dune__exe__Main.cmi -c -intf bin/main.mli)
+$ /Users/nicholascho/.opam/default/bin/ocamlc.opt -config > /var/folders/k3/kcj73b_s61n0jnzm2rdrdtv40000gn/T/dune_8a0da9_output
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -no-alias-deps -opaque -o lib/.neat.objs/byte/neat.cmo -c -impl lib/neat.ml-gen)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -impl lib/population.ml) > _build/default/lib/.neat.objs/neat__Population.impl.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -impl lib/connection.ml) > _build/default/lib/.neat.objs/neat__Connection.impl.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -impl lib/cstate.ml) > _build/default/lib/.neat.objs/neat__Cstate.impl.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -impl lib/genome.ml) > _build/default/lib/.neat.objs/neat__Genome.impl.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -impl lib/node.ml) > _build/default/lib/.neat.objs/neat__Node.impl.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -impl lib/nstate.ml) > _build/default/lib/.neat.objs/neat__Nstate.impl.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -intf lib/connection.mli) > _build/default/lib/.neat.objs/neat__Connection.intf.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -intf lib/cstate.mli) > _build/default/lib/.neat.objs/neat__Cstate.intf.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -intf lib/genome.mli) > _build/default/lib/.neat.objs/neat__Genome.intf.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -intf lib/node.mli) > _build/default/lib/.neat.objs/neat__Node.intf.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -intf lib/nstate.mli) > _build/default/lib/.neat.objs/neat__Nstate.intf.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamldep.opt -modules -intf lib/population.mli) > _build/default/lib/.neat.objs/neat__Population.intf.d
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Connection.cmi -c -intf lib/connection.mli)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Cstate.cmi -c -intf lib/cstate.mli)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Node.cmi -c -intf lib/node.mli)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Nstate.cmi -c -intf lib/nstate.mli)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Population.cmi -c -intf lib/population.mli)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Connection.cmo -c -impl lib/connection.ml)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I lib/.neat.objs/byte -I lib/.neat.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o lib/.neat.objs/native/neat.cmx -c -impl lib/neat.ml-gen)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Genome.cmi -c -intf lib/genome.mli)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Node.cmo -c -impl lib/node.ml)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Cstate.cmo -c -impl lib/cstate.ml)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Nstate.cmo -c -impl lib/nstate.ml)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I bin/.main.eobjs/byte -I lib/.neat.objs/byte -no-alias-deps -opaque -o bin/.main.eobjs/byte/dune__exe__Main.cmi -c -intf bin/main.mli)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Genome.cmo -c -impl lib/genome.ml)
+> File "lib/genome.ml", line 4, characters 63-78:
+> 4 | type t = { nodes : Node.t map; connections : Connection.t map; fitness : float }
+>                                                                    ^^^^^^^^^^^^^^^
+> Error (warning 69 [unused-field]): record field fitness is never read.
+> (However, this field is used to build or mutate values.)
+[2]
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/byte/neat__Population.cmo -c -impl lib/population.ml)
+> File "lib/population.ml", line 1, characters 0-75:
+> 1 | type t = { genomes : Genome.t list; c_state : Cstate.t; nstate : Nstate.t }
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 34 [unused-type-declaration]): unused type t.
+>
+> File "lib/population.ml", line 1, characters 11-35:
+> 1 | type t = { genomes : Genome.t list; c_state : Cstate.t; nstate : Nstate.t }
+>                ^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 69 [unused-field]): unused record field genomes.
+>
+> File "lib/population.ml", line 1, characters 36-55:
+> 1 | type t = { genomes : Genome.t list; c_state : Cstate.t; nstate : Nstate.t }
+>                                         ^^^^^^^^^^^^^^^^^^^
+> Error (warning 69 [unused-field]): unused record field c_state.
+>
+> File "lib/population.ml", line 1, characters 56-73:
+> 1 | type t = { genomes : Genome.t list; c_state : Cstate.t; nstate : Nstate.t }
+>                                                             ^^^^^^^^^^^^^^^^^
+> Error (warning 69 [unused-field]): unused record field nstate.
+>
+> File "lib/population.ml", line 3, characters 4-8:
+> 3 | let init ?(bias = true) i_count o_count g_count =
+>         ^^^^
+> Error (warning 32 [unused-value-declaration]): unused value init.
+>
+> File "lib/population.ml", line 3, characters 11-15:
+> 3 | let init ?(bias = true) i_count o_count g_count =
+>                ^^^^
+> Error (warning 27 [unused-var-strict]): unused variable bias.
+>
+> File "lib/population.ml", line 3, characters 24-31:
+> 3 | let init ?(bias = true) i_count o_count g_count =
+>                             ^^^^^^^
+> Error (warning 27 [unused-var-strict]): unused variable i_count.
+>
+> File "lib/population.ml", line 3, characters 32-39:
+> 3 | let init ?(bias = true) i_count o_count g_count =
+>                                     ^^^^^^^
+> Error (warning 27 [unused-var-strict]): unused variable o_count.
+>
+> File "lib/population.ml", line 3, characters 40-47:
+> 3 | let init ?(bias = true) i_count o_count g_count =
+>                                             ^^^^^^^
+> Error (warning 27 [unused-var-strict]): unused variable g_count.
+>
+> File "lib/population.ml", line 4, characters 6-8:
+> 4 |   let cs = Cstate.empty
+>           ^^
+> Error (warning 26 [unused-var]): unused variable cs.
+>
+> File "lib/population.ml", line 5, characters 6-8:
+> 5 |   and ns = Nstate.empty
+>           ^^
+> Error (warning 26 [unused-var]): unused variable ns.
+>
+> File "lib/population.ml", line 6, characters 6-8:
+> 6 |   and gn = Genome.empty in
+>           ^^
+> Error (warning 26 [unused-var]): unused variable gn.
+[2]
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I lib/.neat.objs/byte -I lib/.neat.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/native/neat__Connection.cmx -c -impl lib/connection.ml)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I lib/.neat.objs/byte -I lib/.neat.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/native/neat__Node.cmx -c -impl lib/node.ml)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I lib/.neat.objs/byte -I lib/.neat.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/native/neat__Cstate.cmx -c -impl lib/cstate.ml)
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I lib/.neat.objs/byte -I lib/.neat.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/native/neat__Nstate.cmx -c -impl lib/nstate.ml)
 $ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I test/.test_neat.eobjs/byte -I /Users/nicholascho/.opam/default/lib/alcotest -I /Users/nicholascho/.opam/default/lib/alcotest/engine -I /Users/nicholascho/.opam/default/lib/alcotest/stdlib_ext -I /Users/nicholascho/.opam/default/lib/astring -I /Users/nicholascho/.opam/default/lib/cmdliner -I /Users/nicholascho/.opam/default/lib/fmt -I /Users/nicholascho/.opam/default/lib/ocaml/unix -I /Users/nicholascho/.opam/default/lib/re -I /Users/nicholascho/.opam/default/lib/seq -I /Users/nicholascho/.opam/default/lib/stdlib-shims -I /Users/nicholascho/.opam/default/lib/uutf -no-alias-deps -opaque -o test/.test_neat.eobjs/byte/dune__exe__Test_neat.cmi -c -intf test/test_neat.mli)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlc.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I lib/.neat.objs/byte -I lib/connection/.connection.objs/byte -I lib/node/.node.objs/byte -intf-suffix .ml -no-alias-deps -opaque -o lib/.neat.objs/byte/neat.cmo -c -impl lib/neat.ml)
-> File "lib/neat.ml", line 50, characters 6-15:
-> 50 |   let find_node n g = Genome_Map.find (Node.get_id n) g.nodes
->            ^^^^^^^^^
-> Error (warning 32 [unused-value-declaration]): unused value find_node.
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I lib/.neat.objs/byte -I lib/.neat.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/native/neat__Population.cmx -c -impl lib/population.ml)
+> File "lib/population.ml", line 1, characters 0-75:
+> 1 | type t = { genomes : Genome.t list; c_state : Cstate.t; nstate : Nstate.t }
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 34 [unused-type-declaration]): unused type t.
 >
-> File "lib/neat.ml", line 52, characters 6-21:
-> 52 |   let find_connection c g =
->            ^^^^^^^^^^^^^^^
-> Error (warning 32 [unused-value-declaration]): unused value find_connection.
+> File "lib/population.ml", line 1, characters 11-35:
+> 1 | type t = { genomes : Genome.t list; c_state : Cstate.t; nstate : Nstate.t }
+>                ^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 69 [unused-field]): unused record field genomes.
 >
-> File "lib/neat.ml", line 92, characters 11-35:
-> 92 | type t = { genomes : Genome.t list; history : History.t }
->                 ^^^^^^^^^^^^^^^^^^^^^^^^
-> Error (warning 69 [unused-field]): record field genomes is never read.
-> (However, this field is used to build or mutate values.)
+> File "lib/population.ml", line 1, characters 36-55:
+> 1 | type t = { genomes : Genome.t list; c_state : Cstate.t; nstate : Nstate.t }
+>                                         ^^^^^^^^^^^^^^^^^^^
+> Error (warning 69 [unused-field]): unused record field c_state.
 >
-> File "lib/neat.ml", line 92, characters 36-55:
-> 92 | type t = { genomes : Genome.t list; history : History.t }
->                                          ^^^^^^^^^^^^^^^^^^^
-> Error (warning 69 [unused-field]): record field history is never read.
-> (However, this field is used to build or mutate values.)
+> File "lib/population.ml", line 1, characters 56-73:
+> 1 | type t = { genomes : Genome.t list; c_state : Cstate.t; nstate : Nstate.t }
+>                                                             ^^^^^^^^^^^^^^^^^
+> Error (warning 69 [unused-field]): unused record field nstate.
 >
-> File "lib/neat.ml", line 119, characters 4-10:
-> 119 | let mutate g h =
->           ^^^^^^
-> Error (warning 32 [unused-value-declaration]): unused value mutate.
+> File "lib/population.ml", line 3, characters 4-8:
+> 3 | let init ?(bias = true) i_count o_count g_count =
+>         ^^^^
+> Error (warning 32 [unused-value-declaration]): unused value init.
 >
-> File "lib/neat.ml", line 122, characters 11-12:
-> 122 |     let g, h = if Random.int 100 < 3 then mut_add_node g h else (g, h) in
->                  ^
-> Error (warning 27 [unused-var-strict]): unused variable h.
+> File "lib/population.ml", line 3, characters 11-15:
+> 3 | let init ?(bias = true) i_count o_count g_count =
+>                ^^^^
+> Error (warning 27 [unused-var-strict]): unused variable bias.
+>
+> File "lib/population.ml", line 3, characters 24-31:
+> 3 | let init ?(bias = true) i_count o_count g_count =
+>                             ^^^^^^^
+> Error (warning 27 [unused-var-strict]): unused variable i_count.
+>
+> File "lib/population.ml", line 3, characters 32-39:
+> 3 | let init ?(bias = true) i_count o_count g_count =
+>                                     ^^^^^^^
+> Error (warning 27 [unused-var-strict]): unused variable o_count.
+>
+> File "lib/population.ml", line 3, characters 40-47:
+> 3 | let init ?(bias = true) i_count o_count g_count =
+>                                             ^^^^^^^
+> Error (warning 27 [unused-var-strict]): unused variable g_count.
+>
+> File "lib/population.ml", line 4, characters 6-8:
+> 4 |   let cs = Cstate.empty
+>           ^^
+> Error (warning 26 [unused-var]): unused variable cs.
+>
+> File "lib/population.ml", line 5, characters 6-8:
+> 5 |   and ns = Nstate.empty
+>           ^^
+> Error (warning 26 [unused-var]): unused variable ns.
+>
+> File "lib/population.ml", line 6, characters 6-8:
+> 6 |   and gn = Genome.empty in
+>           ^^
+> Error (warning 26 [unused-var]): unused variable gn.
 [2]
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I lib/node/.node.objs/byte -I lib/node/.node.objs/native -intf-suffix .ml -no-alias-deps -opaque -o lib/node/.node.objs/native/node.cmx -c -impl lib/node/node.ml)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I lib/connection/.connection.objs/byte -I lib/connection/.connection.objs/native -intf-suffix .ml -no-alias-deps -opaque -o lib/connection/.connection.objs/native/connection.cmx -c -impl lib/connection/connection.ml)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/node/node.cmxa lib/node/.node.objs/native/node.cmx)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/connection/connection.cmxa lib/connection/.connection.objs/native/connection.cmx)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I bin/.main.eobjs/byte -I bin/.main.eobjs/native -I lib/.neat.objs/byte -I lib/.neat.objs/native -I lib/connection/.connection.objs/byte -I lib/connection/.connection.objs/native -I lib/node/.node.objs/byte -I lib/node/.node.objs/native -intf-suffix .ml -no-alias-deps -opaque -o bin/.main.eobjs/native/dune__exe__Main.cmx -c -impl bin/main.ml)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I lib/.neat.objs/byte -I lib/.neat.objs/native -I lib/connection/.connection.objs/byte -I lib/connection/.connection.objs/native -I lib/node/.node.objs/byte -I lib/node/.node.objs/native -intf-suffix .ml -no-alias-deps -opaque -o lib/.neat.objs/native/neat.cmx -c -impl lib/neat.ml)
-> File "lib/neat.ml", line 50, characters 6-15:
-> 50 |   let find_node n g = Genome_Map.find (Node.get_id n) g.nodes
->            ^^^^^^^^^
-> Error (warning 32 [unused-value-declaration]): unused value find_node.
->
-> File "lib/neat.ml", line 52, characters 6-21:
-> 52 |   let find_connection c g =
->            ^^^^^^^^^^^^^^^
-> Error (warning 32 [unused-value-declaration]): unused value find_connection.
->
-> File "lib/neat.ml", line 92, characters 11-35:
-> 92 | type t = { genomes : Genome.t list; history : History.t }
->                 ^^^^^^^^^^^^^^^^^^^^^^^^
-> Error (warning 69 [unused-field]): record field genomes is never read.
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I lib/.neat.objs/byte -I lib/.neat.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Neat -o lib/.neat.objs/native/neat__Genome.cmx -c -impl lib/genome.ml)
+> File "lib/genome.ml", line 4, characters 63-78:
+> 4 | type t = { nodes : Node.t map; connections : Connection.t map; fitness : float }
+>                                                                    ^^^^^^^^^^^^^^^
+> Error (warning 69 [unused-field]): record field fitness is never read.
 > (However, this field is used to build or mutate values.)
->
-> File "lib/neat.ml", line 92, characters 36-55:
-> 92 | type t = { genomes : Genome.t list; history : History.t }
->                                          ^^^^^^^^^^^^^^^^^^^
-> Error (warning 69 [unused-field]): record field history is never read.
-> (However, this field is used to build or mutate values.)
->
-> File "lib/neat.ml", line 119, characters 4-10:
-> 119 | let mutate g h =
->           ^^^^^^
-> Error (warning 32 [unused-value-declaration]): unused value mutate.
->
-> File "lib/neat.ml", line 122, characters 11-12:
-> 122 |     let g, h = if Random.int 100 < 3 then mut_add_node g h else (g, h) in
->                  ^
-> Error (warning 27 [unused-var-strict]): unused variable h.
 [2]
+$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I bin/.main.eobjs/byte -I bin/.main.eobjs/native -I lib/.neat.objs/byte -I lib/.neat.objs/native -intf-suffix .ml -no-alias-deps -opaque -o bin/.main.eobjs/native/dune__exe__Main.cmx -c -impl bin/main.ml)
 $ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I test/.test_neat.eobjs/byte -I test/.test_neat.eobjs/native -I /Users/nicholascho/.opam/default/lib/alcotest -I /Users/nicholascho/.opam/default/lib/alcotest/engine -I /Users/nicholascho/.opam/default/lib/alcotest/stdlib_ext -I /Users/nicholascho/.opam/default/lib/astring -I /Users/nicholascho/.opam/default/lib/cmdliner -I /Users/nicholascho/.opam/default/lib/fmt -I /Users/nicholascho/.opam/default/lib/ocaml/unix -I /Users/nicholascho/.opam/default/lib/re -I /Users/nicholascho/.opam/default/lib/seq -I /Users/nicholascho/.opam/default/lib/stdlib-shims -I /Users/nicholascho/.opam/default/lib/uutf -intf-suffix .ml -no-alias-deps -opaque -o test/.test_neat.eobjs/native/dune__exe__Test_neat.cmx -c -impl test/test_neat.ml)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -shared -linkall -I lib/connection -o lib/connection/connection.cmxs lib/connection/connection.cmxa)
-$ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -shared -linkall -I lib/node -o lib/node/node.cmxs lib/node/node.cmxa)
 $ (cd _build/default && /Users/nicholascho/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -o test/test_neat.exe /Users/nicholascho/.opam/default/lib/astring/astring.cmxa /Users/nicholascho/.opam/default/lib/cmdliner/cmdliner.cmxa /Users/nicholascho/.opam/default/lib/uutf/uutf.cmxa /Users/nicholascho/.opam/default/lib/alcotest/stdlib_ext/alcotest_stdlib_ext.cmxa /Users/nicholascho/.opam/default/lib/fmt/fmt.cmxa /Users/nicholascho/.opam/default/lib/fmt/fmt_cli.cmxa /Users/nicholascho/.opam/default/lib/re/re.cmxa /Users/nicholascho/.opam/default/lib/stdlib-shims/stdlib_shims.cmxa /Users/nicholascho/.opam/default/lib/alcotest/engine/alcotest_engine.cmxa /Users/nicholascho/.opam/default/lib/ocaml/unix/unix.cmxa /Users/nicholascho/.opam/default/lib/fmt/fmt_tty.cmxa /Users/nicholascho/.opam/default/lib/alcotest/alcotest.cmxa -I /Users/nicholascho/.opam/default/lib/alcotest test/.test_neat.eobjs/native/dune__exe__Test_neat.cmx)
