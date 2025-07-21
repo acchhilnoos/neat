@@ -6,6 +6,8 @@ type t = { nodes : Node.t map; connections : Connection.t map; fitness : float }
 let empty =
   { nodes = Genome_Map.empty; connections = Genome_Map.empty; fitness = 0. }
 
+let copy { nodes; connections; fitness } = { nodes; connections; fitness }
+
 let add_node nd gn =
   { gn with nodes = Genome_Map.add (Node.get_id nd) nd gn.nodes }
 
