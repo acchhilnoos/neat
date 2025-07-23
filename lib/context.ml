@@ -44,5 +44,5 @@ let nget (cs, ns, rs) =
   let id, ns' = Nstate.get ns in
   (id, (cs, ns', rs))
 
-let rget_int bd (cs, ns, rs) = (Random.State.int rs bd, (cs, ns, rs))
-let rget_float bd (cs, ns, rs) = (Random.State.float rs bd, (cs, ns, rs))
+let int bd   (_, _, rs) = Random.State.int rs bd
+let float bd (_, _, rs) = Random.State.float rs bd

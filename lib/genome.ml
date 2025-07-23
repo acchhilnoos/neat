@@ -2,16 +2,37 @@ module Genome_Map = Map.Make (Int)
 
 type 'a map = 'a Genome_Map.t
 
+module Vector = struct
+  type t = {
+    mutable data : int array;
+    mutable size : int;
+    mutable capacity : int;
+  }
+
+  let init () = { data = Array.init 32 (fun _ -> 0); size = 0; capacity = 32 }
+  let get i v = v.data.(i)
+
+  let grow v =
+    let capacity = v.capacity * 2 in
+    let u = Array.init capacity (fun _ -> 0) in
+    Array.blit v.data 0 u 0 v.capacity;
+    v.data <- u;
+    v.capacity <- capacity
+
+  let append x v =
+    if v.size = v.capacity then grow v;
+    v.data.(v.size) <- x;
+    v.size <- v.size + 1
+end
+
 (*
     NOTE:
    - maybe Hashtbl
-   - maybe connection innov array for O(1) random access
-     - built only once, no mutation
 *)
 type t = {
   nodes : Node.t map;
   connections : Connection.t map;
-  innovs : int array;
+  innovs : Vector.t;
   fitness : float;
 }
 
@@ -19,7 +40,7 @@ let empty =
   {
     nodes = Genome_Map.empty;
     connections = Genome_Map.empty;
-    innovs = [||];
+    innovs = Vector.init ();
     fitness = 0.;
   }
 
@@ -31,11 +52,8 @@ let add_node nd gn =
 
 let add_connection cn gn =
   let innov = Connection.get_innov cn in
-  {
-    gn with
-    connections = Genome_Map.add innov cn gn.connections;
-    innovs = Array.append gn.innovs [| innov |];
-  }
+  Vector.append innov gn.innovs;
+  { gn with connections = Genome_Map.add innov cn gn.connections }
 
 let mutate_weights gn rs =
   let bound x = max (-1.) (min x 1.) in
@@ -45,10 +63,9 @@ let mutate_weights gn rs =
       Genome_Map.map
         (fun cn ->
           Connection.set_weight cn
-            (if Random.State.int rs 10 < 9 then
-               bound
-                 (Connection.get_weight cn +. Random.State.float rs 0.2 -. 0.1)
-             else Random.State.float rs 2. -. 1.))
+            (if Context.int 10 rs < 9 then
+               bound (Connection.get_weight cn +. Context.float 0.2 rs -. 0.1)
+             else Context.float 2. rs -. 1.))
         gn.connections;
   }
 
