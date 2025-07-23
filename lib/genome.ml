@@ -1,47 +1,61 @@
 module Genome_Map = Map.Make (Int)
 
 type 'a map = 'a Genome_Map.t
-type t = { nodes : Node.t map; connections : Connection.t map; fitness : float }
+
+(*
+    NOTE:
+   - maybe Hashtbl
+   - maybe connection innov array for O(1) random access
+     - built only once, no mutation
+*)
+type t = {
+  nodes : Node.t map;
+  connections : Connection.t map;
+  innovs : int array;
+  fitness : float;
+}
 
 let empty =
-  { nodes = Genome_Map.empty; connections = Genome_Map.empty; fitness = 0. }
+  {
+    nodes = Genome_Map.empty;
+    connections = Genome_Map.empty;
+    innovs = [||];
+    fitness = 0.;
+  }
 
-let copy { nodes; connections; fitness } = { nodes; connections; fitness }
+let copy { nodes; connections; innovs; fitness } =
+  { nodes; connections; innovs; fitness }
 
 let add_node nd gn =
   { gn with nodes = Genome_Map.add (Node.get_id nd) nd gn.nodes }
 
 let add_connection cn gn =
+  let innov = Connection.get_innov cn in
   {
     gn with
-    connections = Genome_Map.add (Connection.get_innov cn) cn gn.connections;
+    connections = Genome_Map.add innov cn gn.connections;
+    innovs = Array.append gn.innovs [| innov |];
   }
+
+let mutate_weights gn rs =
+  let bound x = max (-1.) (min x 1.) in
+  {
+    gn with
+    connections =
+      Genome_Map.map
+        (fun cn ->
+          Connection.set_weight cn
+            (if Random.State.int rs 10 < 9 then
+               bound
+                 (Connection.get_weight cn +. Random.State.float rs 0.2 -. 0.1)
+             else Random.State.float rs 2. -. 1.))
+        gn.connections;
+  }
+
+let mut_add_node gn ct = (gn, ct)
+let mut_add_connection gn ct = (gn, ct)
 
 (*
-let copy { nodes; connections; fitness } = { nodes; connections; fitness }
-
-let add_node i t g =
-  let n = Node.init i t in
-  { g with nodes = Genome_Map.add (Node.get_id n) n g.nodes }
-
-let add_connection i_id o_id g h =
-  let i, h = History.innov i_id o_id h in
-  ( {
-      g with
-      connections = Genome_Map.add i (Connection.init i_id o_id i) g.connections;
-    },
-    h )
-
-let find_node n g = Genome_Map.find (Node.get_id n) g.nodes
-let find_connection c g = Genome_Map.find (Connection.get_innov c) g.connections
-
-let mutate_weights g =
-  {
-    g with
-    connections =
-      Genome_Map.map (fun c -> if Random.int 5 < 4 then c else c) g.connections;
-  }
-
 let mut_add_node g h =
   let r = Random.int (Genome_Map.cardinal g.connections) in
   let innov, c, _ =

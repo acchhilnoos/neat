@@ -9,3 +9,4 @@ let get_innov c = c.innov
 let get_enabled c = c.enabled
 let get_weight c = c.weight
 let toggle c = { c with enabled = not c.enabled }
+let set_weight c weight = { c with weight }

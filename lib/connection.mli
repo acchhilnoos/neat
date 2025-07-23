@@ -7,3 +7,4 @@ val get_innov : t -> int
 val get_enabled : t -> bool
 val get_weight : t -> float
 val toggle : t -> t
+val set_weight : t -> float -> t
