@@ -32,7 +32,15 @@ module Nstate = struct
     (i, { next_id = i + 1 })
 end
 
-type t = Cstate.t * Nstate.t * Random.State.t
+type c = Cstate.t * Nstate.t * Random.State.t
+type 'a t = c -> 'a * c
+
+let return x ct = (x, ct)
+let run m ct = m ct
+
+let ( let* ) m f ct =
+  let n, ct' = m ct in
+  f n ct'
 
 let init () = (Cstate.empty, Nstate.empty, Random.State.make [| 633397 |])
 
@@ -44,5 +52,10 @@ let nget (cs, ns, rs) =
   let id, ns' = Nstate.get ns in
   (id, (cs, ns', rs))
 
-let int bd   (_, _, rs) = Random.State.int rs bd
-let float bd (_, _, rs) = Random.State.float rs bd
+let rand_int bd (cs, ns, rs) =
+  let i = Random.State.int rs bd in
+  (i, (cs, ns, rs))
+
+let rand_float bd (cs, ns, rs) =
+  let i = Random.State.float rs bd in
+  (i, (cs, ns, rs))

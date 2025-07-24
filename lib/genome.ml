@@ -55,19 +55,45 @@ let add_connection cn gn =
   Vector.append innov gn.innovs;
   { gn with connections = Genome_Map.add innov cn gn.connections }
 
-let mutate_weights gn rs =
-  let bound x = max (-1.) (min x 1.) in
-  {
-    gn with
-    connections =
-      Genome_Map.map
-        (fun cn ->
-          Connection.set_weight cn
-            (if Context.int 10 rs < 9 then
-               bound (Connection.get_weight cn +. Context.float 0.2 rs -. 0.1)
-             else Context.float 2. rs -. 1.))
-        gn.connections;
-  }
+let mutate_weights gn =
+  let open Context in
+  let bound x = max (-1.) (min x 1.)
+  and connections = Genome_Map.bindings gn.connections in
+  let rec mut_rec acc = function
+    | [] -> return { gn with connections = Genome_Map.of_list (List.rev acc) }
+    | (iv, cn) :: rest ->
+        let* ri = rand_int 10 in
+        let* w =
+          if ri < 9 then
+            let* rf = rand_float 0.2 in
+            return (bound (Connection.get_weight cn +. rf -. 0.1))
+          else
+            let* rf = rand_float 2. in
+            return (rf -. 1.)
+        in
+        mut_rec ((iv, Connection.set_weight cn w) :: acc) rest
+  in
+  mut_rec [] connections
+
+(* ( { *)
+(*     gn with *)
+(*     connections = *)
+(*       Genome_Map.map *)
+(*         (fun cn -> *)
+(*           let w, _ = *)
+(*             Context.( *)
+(*               run *)
+(*                 ( rand_int 10 >>= fun ri -> *)
+(*                   if ri < 9 then *)
+(*                     rand_float 0.2 >>= fun rf -> *)
+(*                     return (bound (Connection.get_weight cn +. rf -. 0.1)) *)
+(*                   else rand_float 2.0 >>= fun rf -> return rf ) *)
+(*                 ct) *)
+(*           in *)
+(*           Connection.set_weight cn w) *)
+(*         gn.connections; *)
+(*   }, *)
+(*   ct ) *)
 
 let mut_add_node gn ct = (gn, ct)
 let mut_add_connection gn ct = (gn, ct)

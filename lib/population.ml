@@ -1,45 +1,45 @@
-type t = { genomes : Genome.t list; context : Context.t }
+type t = { genomes : Genome.t list; context : Context.c }
 
-let init ?(bias = true) i_count o_count g_count =
-  let i_ids = List.init i_count (fun x -> x)
-  and o_ids = List.init o_count (fun x -> x + i_count)
-  and b_ids = [ i_count + o_count ]
-  and ct = Context.init ()
-  and gn = Genome.empty in
-  let i_gn, i_ct =
-    List.fold_left
-      (fun (i_gn_acc, i_ct_acc) _ ->
-        let i_id, i_ct' = Context.nget i_ct_acc in
-        let i_nd = Node.init i_id Node.Input in
-        (Genome.add_node i_nd i_gn_acc, i_ct'))
-      (gn, ct) i_ids
-  in
-  let o_gn, o_ct =
-    List.fold_left
-      (fun (o_gn_acc, o_ct_acc) _ ->
-        let o_id, o_ct' = Context.nget o_ct_acc in
-        let o_nd = Node.init o_id Node.Output in
-        (Genome.add_node o_nd o_gn_acc, o_ct'))
-      (i_gn, i_ct) o_ids
-  in
-  let b_gn, b_ct =
-    if bias then
-      let b_id, b_ct' = Context.nget o_ct in
-      let b_nd = Node.init b_id Node.Bias in
-      (Genome.add_node b_nd o_gn, b_ct')
-    else (o_gn, o_ct)
-  in
-  let c_gn, context =
-    List.fold_left
-      (fun (i_gn_acc, i_ct_acc) i_id ->
-        List.fold_left
-          (fun (o_gn_acc, o_ct_acc) o_id ->
-            let innov, o_ct' = Context.cget i_id o_id o_ct_acc in
-            let cn = Connection.init i_id o_id innov in
-            (Genome.add_connection cn o_gn_acc, o_ct'))
-          (i_gn_acc, i_ct_acc) o_ids)
-      (b_gn, b_ct) (i_ids @ b_ids)
-  in
-  { genomes = List.init g_count (fun _ -> Genome.copy c_gn); context }
+(* let init ?(bias = true) i_count o_count g_count = *)
+(*   let i_ids = List.init i_count (fun x -> x) *)
+(*   and o_ids = List.init o_count (fun x -> x + i_count) *)
+(*   and b_ids = [ i_count + o_count ] *)
+(*   and ct = Context.init () *)
+(*   and gn = Genome.empty in *)
+(*   let i_gn, i_ct = *)
+(*     List.fold_left *)
+(*       (fun (i_gn_acc, i_ct_acc) _ -> *)
+(*         let i_id, i_ct' = Context.nget i_ct_acc in *)
+(*         let i_nd = Node.init i_id Node.Input in *)
+(*         (Genome.add_node i_nd i_gn_acc, i_ct')) *)
+(*       (gn, ct) i_ids *)
+(*   in *)
+(*   let o_gn, o_ct = *)
+(*     List.fold_left *)
+(*       (fun (o_gn_acc, o_ct_acc) _ -> *)
+(*         let o_id, o_ct' = Context.nget o_ct_acc in *)
+(*         let o_nd = Node.init o_id Node.Output in *)
+(*         (Genome.add_node o_nd o_gn_acc, o_ct')) *)
+(*       (i_gn, i_ct) o_ids *)
+(*   in *)
+(*   let b_gn, b_ct = *)
+(*     if bias then *)
+(*       let b_id, b_ct' = Context.nget o_ct in *)
+(*       let b_nd = Node.init b_id Node.Bias in *)
+(*       (Genome.add_node b_nd o_gn, b_ct') *)
+(*     else (o_gn, o_ct) *)
+(*   in *)
+(*   let c_gn, context = *)
+(*     List.fold_left *)
+(*       (fun (i_gn_acc, i_ct_acc) i_id -> *)
+(*         List.fold_left *)
+(*           (fun (o_gn_acc, o_ct_acc) o_id -> *)
+(*             let innov, o_ct' = Context.cget i_id o_id o_ct_acc in *)
+(*             let cn = Connection.init i_id o_id innov in *)
+(*             (Genome.add_connection cn o_gn_acc, o_ct')) *)
+(*           (i_gn_acc, i_ct_acc) o_ids) *)
+(*       (b_gn, b_ct) (i_ids @ b_ids) *)
+(*   in *)
+(*   { genomes = List.init g_count (fun _ -> Genome.copy c_gn); context } *)
 
 let mutate gn = gn
