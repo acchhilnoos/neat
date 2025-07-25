@@ -38,9 +38,13 @@ type 'a t = c -> 'a * c
 let return x ct = (x, ct)
 let run m ct = m ct
 
-let ( let* ) m f ct =
+let ( >>= ) m f ct =
   let n, ct' = m ct in
   f n ct'
+
+module Let_syntax = struct
+  let ( let* ) = ( >>= )
+end
 
 let init () = (Cstate.empty, Nstate.empty, Random.State.make [| 633397 |])
 

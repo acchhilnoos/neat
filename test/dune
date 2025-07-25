@@ -1,3 +1,5 @@
 (test
  (name test_neat)
- (libraries alcotest))
+ (libraries 
+   alcotest
+   neat))
