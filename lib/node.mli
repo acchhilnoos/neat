@@ -12,4 +12,4 @@ val get_id    : t -> int
 val get_kind  : t -> kind
 val get_layer : t -> int
 val get_value : t -> float
-val set_layer : t -> int -> t
+val inc_layer : t -> t
