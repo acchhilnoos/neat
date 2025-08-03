@@ -56,10 +56,13 @@ let nget (cs, ns, rs) =
   let id, ns' = Nstate.get ns in
   (id, (cs, ns', rs))
 
-let rand_int bd (cs, ns, rs) =
+let rand_int bd (_, _, rs) = Random.State.int rs bd
+let rand_float bd (_, _, rs) = Random.State.float rs bd
+
+let m_rand_int bd (cs, ns, rs) =
   let i = Random.State.int rs bd in
   (i, (cs, ns, rs))
 
-let rand_float bd (cs, ns, rs) =
+let m_rand_float bd (cs, ns, rs) =
   let i = Random.State.float rs bd in
   (i, (cs, ns, rs))

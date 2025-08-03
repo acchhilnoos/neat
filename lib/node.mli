@@ -8,8 +8,8 @@ val init : ?value:float -> int -> kind -> t
 
     [~value] allows the corresponding field to be set at creation (default=0.). *)
 
-val get_id : t -> int
-val get_kind : t -> kind
+val get_id    : t -> int
+val get_kind  : t -> kind
 val get_layer : t -> int
 val get_value : t -> float
-val inc_layer : t -> t
+val set_layer : t -> int -> t
