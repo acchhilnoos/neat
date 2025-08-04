@@ -247,3 +247,15 @@ let add_node gn =
 (*   return gn' *)
 
 let mut_add_connection gn ct = (gn, ct)
+
+let pp_list ?(pp_sep = fun fmt () -> Format.fprintf fmt ";@ ") pp_item fmt xs =
+  Format.pp_print_list ~pp_sep:(fun fmt () -> pp_sep fmt ()) pp_item fmt xs
+
+let pp fmt gn =
+  let nodes = Genome_Tbl.fold (fun _ n acc -> n :: acc) gn.nodes [] in
+  let conns = Genome_Tbl.fold (fun _ c acc -> c :: acc) gn.connections [] in
+  Format.fprintf fmt
+    "@[<v 2>{@@[<v 2>nodes=[@;\
+     <1 2>%a@]@]@@[<v 2>conns=[@;\
+     <1 2>%a@]@]@fitness=%.3f@@]}" (pp_list Node.pp) nodes
+    (pp_list Connection.pp) conns gn.fitness

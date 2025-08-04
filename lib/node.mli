@@ -13,3 +13,5 @@ val get_kind  : t -> kind
 val get_layer : t -> int
 val get_value : t -> float
 val inc_layer : t -> t
+val set_value : t -> float -> t
+val pp        : Format.formatter -> t -> unit
