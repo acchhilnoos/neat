@@ -1,37 +1,3 @@
-module Vector : sig
-  type t
-
-  val init : unit -> t
-  val get : int -> t -> int
-  val copy : t -> t
-  val size : t -> int
-  val grow : t -> unit
-  val append : int -> t -> unit
-end = struct
-  type t = {
-    mutable data : int array;
-    mutable size : int;
-    mutable capacity : int;
-  }
-
-  let init () = { data = Array.init 32 (fun _ -> 0); size = 0; capacity = 32 }
-  let get i v = v.data.(i)
-  let size v = v.size
-  let copy { data; size; capacity } = { data = Array.copy data; size; capacity }
-
-  let grow v =
-    let capacity = Int.of_float (Float.ceil (Int.to_float v.capacity *. 2.)) in
-    let u = Array.init capacity (fun _ -> 0) in
-    Array.blit v.data 0 u 0 v.capacity;
-    v.data <- u;
-    v.capacity <- capacity
-
-  let append x v =
-    if v.size = v.capacity then grow v;
-    v.data.(v.size) <- x;
-    v.size <- v.size + 1
-end
-
 module Genome_Tbl = Hashtbl.Make (Int)
 
 type t = {
@@ -73,14 +39,12 @@ let uc cn gn =
   let _ = Genome_Tbl.replace gn.connections innov cn in
   gn
 
-let init ?(bias = true) ic oc =
-  let open Context in
-  let st = Context.init () in
+let init ?(bias = true) ?(st = Context.init ()) ic oc =
   let gn = empty in
   let i_ls, st =
     List.fold_left
       (fun (ls, st) _ ->
-        let id, st' = run nget st in
+        let id, st' = Context.(run nget) st in
         let _ = an (Node.init id Node.Input) gn in
         (id :: ls, st'))
       ([], st)
@@ -88,7 +52,7 @@ let init ?(bias = true) ic oc =
   in
   let i_ls, st =
     if bias then
-      let id, st' = run nget st in
+      let id, st' = Context.(run nget) st in
       let _ = an (Node.init id Node.Bias) gn in
       (id :: i_ls, st')
     else (i_ls, st)
@@ -96,7 +60,7 @@ let init ?(bias = true) ic oc =
   let o_ls, st =
     List.fold_left
       (fun (ls, st) _ ->
-        let id, st' = run nget st in
+        let id, st' = Context.(run nget) st in
         let _ = an (Node.init id Node.Output) gn in
         (id :: ls, st'))
       ([], st)
@@ -107,7 +71,7 @@ let init ?(bias = true) ic oc =
       (fun st' i ->
         List.fold_left
           (fun st'' j ->
-            let id, st''' = run (cget i j) st'' in
+            let id, st''' = Context.(run (cget i j)) st'' in
             let _ = ac (Connection.init i j id) gn in
             st''')
           st' o_ls)
@@ -158,47 +122,45 @@ let make_scs gn =
 
 let add_node gn =
   (* TODO: reservoir sampling *)
-  let open Context in
-  let open Let_syntax in
+  let open Context.Let_syntax in
   let scs = make_scs gn in
   let cns =
     Genome_Tbl.fold (fun _ cn acc -> cn :: acc) gn.connections []
     |> Array.of_list
   in
-  let* r = m_rand_int (Array.length cns) in
+  let* r = Context.rand_int (Array.length cns) in
   let cn = cns.(r) in
   let ii = Connection.get_i_id cn in
   let oi = Connection.get_o_id cn in
-  let* id = nget in
+  let* id = Context.nget in
   let il = Node.get_layer (Genome_Tbl.find gn.nodes ii) in
   let nd = Node.init id (Node.Hidden (il + 1)) in
-  let* iv = cget ii id in
-  let* ov = cget id oi in
+  let* iv = Context.cget ii id in
+  let* ov = Context.cget id oi in
   let ic = Connection.init ii id iv in
   let oc = Connection.init id oi ov ~weight:(Connection.get_weight cn) in
   gn |> an nd |> ac ic |> ac oc
   |> uc (Connection.toggle cn)
   |> update_layers (id, il + 1) scs
-  |> return
+  |> Context.return
 
 let add_connection gn =
-  let open Context in
-  let open Let_syntax in
+  let open Context.Let_syntax in
   let nds =
     Genome_Tbl.fold (fun id _ acc -> id :: acc) gn.nodes [] |> Array.of_list
   in
   let scs = make_scs gn in
-  let rec exists x y =
+  let exists x y =
     match Genome_Tbl.find_opt scs x with
     | Some z -> List.mem y z
     | None -> false
   in
   let rec rand n =
-    if n = 0 then return None
+    if n = 0 then Context.return None
     else
-      let* i = m_rand_int (Array.length nds) in
+      let* i = Context.rand_int (Array.length nds) in
       let i = nds.(i) in
-      let* o = m_rand_int (Array.length nds) in
+      let* o = Context.rand_int (Array.length nds) in
       let o = nds.(o) in
       let i, o =
         if
@@ -207,7 +169,7 @@ let add_connection gn =
         then (i, o)
         else (o, i)
       in
-      if exists i o then rand (n - 1) else return (Some (i, o))
+      if exists i o then rand (n - 1) else Context.return (Some (i, o))
   in
   let enum () =
     let free =
@@ -222,45 +184,25 @@ let add_connection gn =
         [] nds
       |> Array.of_list
     in
-    let* i = m_rand_int (Array.length free) in
-    return free.(i)
+    let* i = Context.rand_int (Array.length free) in
+    Context.return free.(i)
   in
   let* rpair = rand 10 in
-  match rpair with Some x -> return x | None -> enum ()
+  match rpair with Some x -> Context.return x | None -> enum ()
 
-(* let mutate_weights gn = *)
-(*   let open Context in *)
-(*   let open Let_syntax in *)
-(*   let bound x = max (-1.) (min x 1.) *)
-(*   and cns = *)
-(*     Genome_Tbl.fold (fun innov cn acc -> (innov, cn) :: acc) gn.connections [] *)
-(*   in *)
-(*   let rec mut_rec = function *)
-(*     | [] -> return gn *)
-(*     | (innov, cn) :: rest -> *)
-(*         let* ri = rand_int 10 in *)
-(*         let* w = *)
-(*           if ri < 9 then *)
-(*             let* rf = rand_float 0.2 in *)
-(*             return (bound (Connection.get_weight cn +. rf -. 0.1)) *)
-(*           else *)
-(*             let* rf = rand_float 2. in *)
-(*             return (rf -. 1.) *)
-(*         in *)
-(*         let cn' = Connection.set_weight cn w in *)
-(*         let _ = Genome_Tbl.replace gn.connections innov cn' in *)
-(*         mut_rec rest *)
-(*   in *)
-(*   mut_rec cns *)
-
-let pp_list ?(pp_sep = fun fmt () -> Format.fprintf fmt ";@ ") pp_item fmt xs =
+let pp_list ?(pp_sep = fun fmt () -> Format.fprintf fmt ";@   ") pp_item fmt xs
+    =
   Format.pp_print_list ~pp_sep:(fun fmt () -> pp_sep fmt ()) pp_item fmt xs
 
 let pp fmt gn =
   let nodes = Genome_Tbl.fold (fun _ n acc -> n :: acc) gn.nodes [] in
   let conns = Genome_Tbl.fold (fun _ c acc -> c :: acc) gn.connections [] in
   Format.fprintf fmt
-    "@[<v 2>{@@[<v 2>nodes=[@;\
-     <1 2>%a@]@]@@[<v 2>conns=[@;\
-     <1 2>%a@]@]@fitness=%.3f@@]}" (pp_list Node.pp) nodes
-    (pp_list Connection.pp) conns gn.fitness
+    "@[<v 0>@[<v 8>nodes = [@;\
+    \  %a;@;\
+     ]@]@;\
+     @[<v 8>conns = [@;\
+    \  %a;@;\
+     ]@]@;\
+     fitness = %.3f@]@;"
+    (pp_list Node.pp) nodes (pp_list Connection.pp) conns gn.fitness

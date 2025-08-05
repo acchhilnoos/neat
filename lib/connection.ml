@@ -12,5 +12,5 @@ let toggle c = { c with enabled = not c.enabled }
 let set_weight c weight = { c with weight }
 
 let pp fmt c =
-  Format.fprintf fmt "{i=%2d; o=%2d; innov=%3d; en=%5b; w=%6.3f}" c.i_id c.o_id
+  Format.fprintf fmt "{i = %2d; o = %2d; innov = %3d; en = %5b; w = %6.3f}" c.i_id c.o_id
     c.innov c.enabled c.weight

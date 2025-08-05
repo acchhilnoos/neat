@@ -19,5 +19,5 @@ let pp_kind fmt = function
   | Output -> Format.fprintf fmt "Output    "
 
 let pp fmt nd =
-  Format.fprintf fmt "{id=%2d; kind=%a; value=%6.3f}" nd.id pp_kind nd.kind
+  Format.fprintf fmt "{id = %2d; kind = %a; value = %6.3f}" nd.id pp_kind nd.kind
     nd.value

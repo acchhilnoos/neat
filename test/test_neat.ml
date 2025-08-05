@@ -13,12 +13,12 @@ let get_iv i o =
   i
 
 let get_int b =
-  let i, st' = Neat.Context.run (Neat.Context.m_rand_int b) !st in
+  let i, st' = Neat.Context.run (Neat.Context.rand_int b) !st in
   st := st';
   i
 
 let get_float b =
-  let i, st' = Neat.Context.run (Neat.Context.m_rand_float b) !st in
+  let i, st' = Neat.Context.run (Neat.Context.rand_float b) !st in
   st := st';
   i
 
@@ -173,7 +173,11 @@ let n_val () =
 
 (* genome *)
 
-
+let g_init () =
+  let open Neat in
+  let gn, _ = Genome.init ~st:!st 3 3 in
+  Format.printf "gn: %a@." Genome.pp gn;
+  Alcotest.(check bool) "id1" true true
 
 (* genome *)
 
@@ -195,5 +199,11 @@ let () =
           test_case "id" `Quick n_id;
           test_case "layer" `Quick n_ly;
           test_case "value" `Quick n_val;
+        ] );
+      ( "genome",
+        [
+          test_case "init" `Quick g_init;
+          (* test_case "layer" `Quick n_ly; *)
+          (* test_case "value" `Quick n_val; *)
         ] );
     ]
