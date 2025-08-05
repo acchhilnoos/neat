@@ -73,8 +73,9 @@ let uc cn gn =
   let _ = Genome_Tbl.replace gn.connections innov cn in
   gn
 
-let init ?(bias = true) ic oc st =
+let init ?(bias = true) ic oc =
   let open Context in
+  let st = Context.init () in
   let gn = empty in
   let i_ls, st =
     List.fold_left
@@ -141,31 +142,34 @@ let update_layers (sn, sl) scs gn =
   in
   bfs q
 
+let make_scs gn =
+  let scs = Genome_Tbl.create (Genome_Tbl.length gn.nodes) in
+  let _ =
+    Genome_Tbl.iter
+      (fun _ cn ->
+        let i = Connection.get_i_id cn in
+        Genome_Tbl.replace scs i
+          (match Genome_Tbl.find_opt scs i with
+          | Some x -> Connection.get_o_id cn :: x
+          | None -> [ Connection.get_o_id cn ]))
+      gn.connections
+  in
+  scs
+
 let add_node gn =
   (* TODO: reservoir sampling *)
   let open Context in
   let open Let_syntax in
-  let scs, cns =
-    Genome_Tbl.fold
-      (fun _ cn (scs, cns) ->
-        let _ =
-          match Genome_Tbl.find_opt scs (Connection.get_i_id cn) with
-          | Some x ->
-              Genome_Tbl.replace scs (Connection.get_i_id cn)
-                (Connection.get_o_id cn :: x)
-          | None ->
-              Genome_Tbl.add scs (Connection.get_i_id cn)
-                [ Connection.get_o_id cn ]
-        in
-        (scs, cn :: cns))
-      gn.connections
-      (Genome_Tbl.create (Genome_Tbl.length gn.connections), [])
+  let scs = make_scs gn in
+  let cns =
+    Genome_Tbl.fold (fun _ cn acc -> cn :: acc) gn.connections []
+    |> Array.of_list
   in
-  let* r = m_rand_int (List.length cns) in
-  let cn = List.nth cns r in
+  let* r = m_rand_int (Array.length cns) in
+  let cn = cns.(r) in
   let ii = Connection.get_i_id cn in
   let oi = Connection.get_o_id cn in
-  let* id = Context.nget in
+  let* id = nget in
   let il = Node.get_layer (Genome_Tbl.find gn.nodes ii) in
   let nd = Node.init id (Node.Hidden (il + 1)) in
   let* iv = cget ii id in
@@ -177,26 +181,52 @@ let add_node gn =
   |> update_layers (id, il + 1) scs
   |> return
 
-(* let update_layers id ly gn = *)
-(*   let rec update_rec cur nxt l = *)
-(*     match cur with *)
-(*     | x :: xs -> *)
-(*         if Node.get_layer (Genome_Tbl.find gn.nodes x) <= l then *)
-(*           let _ = *)
-(*             Genome_Tbl.replace gn.nodes x *)
-(*               (Node.inc_layer (Genome_Tbl.find gn.nodes x)) *)
-(*           in *)
-(*           update_rec xs *)
-(*             (match Genome_Tbl.find_opt gn.succs x with *)
-(*             | Some x -> x @ nxt *)
-(*             | None -> nxt) *)
-(*             l *)
-(*         else update_rec xs nxt l *)
-(*     | [] -> if nxt = [] then gn else update_rec nxt [] (l + 1) *)
-(*   in *)
-(*   match Genome_Tbl.find_opt gn.succs id with *)
-(*   | Some x -> update_rec x [] ly *)
-(*   | None -> gn *)
+let add_connection gn =
+  let open Context in
+  let open Let_syntax in
+  let nds =
+    Genome_Tbl.fold (fun id _ acc -> id :: acc) gn.nodes [] |> Array.of_list
+  in
+  let scs = make_scs gn in
+  let rec exists x y =
+    match Genome_Tbl.find_opt scs x with
+    | Some z -> List.mem y z
+    | None -> false
+  in
+  let rec rand n =
+    if n = 0 then return None
+    else
+      let* i = m_rand_int (Array.length nds) in
+      let i = nds.(i) in
+      let* o = m_rand_int (Array.length nds) in
+      let o = nds.(o) in
+      let i, o =
+        if
+          Node.get_layer (Genome_Tbl.find gn.nodes i)
+          < Node.get_layer (Genome_Tbl.find gn.nodes o)
+        then (i, o)
+        else (o, i)
+      in
+      if exists i o then rand (n - 1) else return (Some (i, o))
+  in
+  let enum () =
+    let free =
+      Array.fold_left
+        (fun acc i ->
+          Array.fold_left
+            (fun acc' o ->
+              let il = Node.get_layer (Genome_Tbl.find gn.nodes i) in
+              let ol = Node.get_layer (Genome_Tbl.find gn.nodes o) in
+              if il < ol && not (exists i o) then (i, o) :: acc' else acc)
+            acc nds)
+        [] nds
+      |> Array.of_list
+    in
+    let* i = m_rand_int (Array.length free) in
+    return free.(i)
+  in
+  let* rpair = rand 10 in
+  match rpair with Some x -> return x | None -> enum ()
 
 (* let mutate_weights gn = *)
 (*   let open Context in *)
@@ -222,31 +252,6 @@ let add_node gn =
 (*         mut_rec rest *)
 (*   in *)
 (*   mut_rec cns *)
-
-(* let mut_add_node gn = *)
-(*   let open Context in *)
-(*   let open Let_syntax in *)
-(*   let* ri = rand_int (Vector.size gn.innovs) in *)
-(*   let innov = Vector.get ri gn.innovs in *)
-(*   let cn = Genome_Tbl.find gn.connections innov in *)
-(*   let cn = if Connection.get_enabled cn then Connection.toggle cn else cn in *)
-(*   let i = Connection.get_i_id cn in *)
-(*   let il = Node.get_layer (Genome_Tbl.find gn.nodes i) in *)
-(*   let o = Connection.get_o_id cn in *)
-(*   let* id = nget in *)
-(*   let nd = Node.init id (Node.Hidden (il + 1)) in *)
-(*   let* ii = cget i id in *)
-(*   let* oi = cget id o in *)
-(*   let ic = Connection.init i id ii in *)
-(*   let oc = Connection.init id o oi in *)
-(*   let gn' = *)
-(*     gn |> add_node nd |> add_connection ic |> add_connection oc *)
-(*     |> add_connection cn *)
-(*     |> update_layers id (il + 1) *)
-(*   in *)
-(*   return gn' *)
-
-let mut_add_connection gn ct = (gn, ct)
 
 let pp_list ?(pp_sep = fun fmt () -> Format.fprintf fmt ";@ ") pp_item fmt xs =
   Format.pp_print_list ~pp_sep:(fun fmt () -> pp_sep fmt ()) pp_item fmt xs

@@ -9,3 +9,4 @@ val copy : t          -> t
 (* val mutate_weights : t            -> t Context.t *)
 (* val mut_add_node   : t            -> t Context.t *)
 (* val mut_add_connection : t            -> Context.t -> t * Context.t *)
+val pp   : Format.formatter -> t -> unit
