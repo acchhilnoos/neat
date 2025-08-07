@@ -5,8 +5,7 @@ type t
     - consider removing Random.State.t for perf increase
 *)
 val init : ?bias:bool -> ?st:Context.c -> int -> int -> t * Context.c
-val copy : t          -> t
-(* val mutate_weights : t            -> t Context.t *)
-(* val mut_add_node   : t            -> t Context.t *)
-(* val mut_add_connection : t            -> Context.t -> t * Context.t *)
-val pp   : Format.formatter -> t -> unit
+val copy : t -> t
+val add_node : t -> t Context.t
+val add_connection : t -> t Context.t
+val pp : Format.formatter -> t -> unit

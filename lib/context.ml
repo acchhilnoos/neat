@@ -36,8 +36,13 @@ end
 type c = Cstate.t * Nstate.t * Random.State.t
 type 'a t = c -> 'a * c
 
+let init () = (Cstate.empty, Nstate.empty, Random.State.make [| 633397 |])
 let return x ct = (x, ct)
 let run m ct = m ct
+
+let fun_with m ct =
+  let m', ct' = m ct in
+  m', ct'
 
 let ( >>= ) m f ct =
   let n, ct' = m ct in
@@ -46,8 +51,6 @@ let ( >>= ) m f ct =
 module Let_syntax = struct
   let ( let* ) = ( >>= )
 end
-
-let init () = (Cstate.empty, Nstate.empty, Random.State.make [| 633397 |])
 
 let cget i_id o_id (cs, ns, rs) =
   let innov, cs' = Cstate.get i_id o_id cs in

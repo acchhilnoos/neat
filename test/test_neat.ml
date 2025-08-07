@@ -32,7 +32,7 @@ let c_iid () =
   let o = get_int 100 in
   let v = get_iv i o in
   let cn = Connection.init i o v in
-  Format.printf "c_iid     conn : %a@." Connection.pp cn;
+  (* Format.printf "c_iid     conn : %a@." Connection.pp cn; *)
   Alcotest.(check int) "in id" i (Connection.get_i_id cn)
 
 let c_oid () =
@@ -41,7 +41,7 @@ let c_oid () =
   let o = get_int 100 in
   let v = get_iv i o in
   let cn = Connection.init i o v in
-  Format.printf "c_oid     conn : %a@." Connection.pp cn;
+  (* Format.printf "c_oid     conn : %a@." Connection.pp cn; *)
   Alcotest.(check int) "out id" o (Connection.get_o_id cn)
 
 let c_innov () =
@@ -50,22 +50,22 @@ let c_innov () =
   let o = get_int 100 in
   let v = get_iv i o in
   let cn = Connection.init i o v in
-  Format.printf "c_innov   conn : %a@." Connection.pp cn;
+  (* Format.printf "c_innov   conn : %a@." Connection.pp cn; *)
   Alcotest.(check int) "innov" v (Connection.get_innov cn)
 
 let c_enabled () =
   let open Neat in
-  let i = get_int 100 in
-  let o = get_int 100 in
-  let v = get_iv i o in
+  let i1 = get_int 100 in
+  let o1 = get_int 100 in
+  let v1 = get_iv i1 o1 in
   let i2 = get_int 100 in
   let o2 = get_int 100 in
   let v2 = get_iv i2 o2 in
-  let cn1 = Connection.init i o v in
+  let cn1 = Connection.init i1 o1 v1 in
   let cn2 = Connection.init ~enabled:false i2 o2 v2 in
-  Format.printf "c_enabled conn1: %a@." Connection.pp cn1;
-  Format.printf "c_enabled conn2: %a@." Connection.pp cn2;
-  Format.printf "c_toggled conn2: %a@." Connection.pp (Connection.toggle cn2);
+  (* Format.printf "c_enabled conn1: %a@." Connection.pp cn1; *)
+  (* Format.printf "c_enabled conn2: %a@." Connection.pp cn2; *)
+  (* Format.printf "c_toggled conn2: %a@." Connection.pp (Connection.toggle cn2); *)
   Alcotest.(check bool) "default" true (Connection.get_enabled cn1);
   Alcotest.(check bool) "disabled" false (Connection.get_enabled cn2);
   Alcotest.(check bool)
@@ -74,22 +74,22 @@ let c_enabled () =
 
 let c_weight () =
   let open Neat in
-  let i = get_int 100 in
-  let o = get_int 100 in
-  let v = get_iv i o in
+  let i1 = get_int 100 in
+  let o1 = get_int 100 in
+  let v1 = get_iv i1 o1 in
   let i2 = get_int 100 in
   let o2 = get_int 100 in
   let v2 = get_iv i2 o2 in
-  let w = get_float 2. -. 1. in
+  let w1 = get_float 2. -. 1. in
   let w2 = get_float 2. -. 1. in
-  let cn1 = Connection.init i o v in
-  let cn2 = Connection.init ~weight:w i2 o2 v2 in
-  Format.printf "c_weight  conn1: %a@." Connection.pp cn1;
-  Format.printf "c_weight  conn2: %a@." Connection.pp cn2;
-  Format.printf "c_set     conn2: %a@." Connection.pp
-    (Connection.set_weight cn2 w2);
+  let cn1 = Connection.init i1 o1 v1 in
+  let cn2 = Connection.init ~weight:w1 i2 o2 v2 in
+  (* Format.printf "c_weight  conn1: %a@." Connection.pp cn1; *)
+  (* Format.printf "c_weight  conn2: %a@." Connection.pp cn2; *)
+  (* Format.printf "c_set     conn2: %a@." Connection.pp *)
+  (* (Connection.set_weight cn2 w2); *)
   Alcotest.(check (float 0.)) "default" 1. (Connection.get_weight cn1);
-  Alcotest.(check (float 0.)) "w" w (Connection.get_weight cn2);
+  Alcotest.(check (float 0.)) "w" w1 (Connection.get_weight cn2);
   Alcotest.(check (float 0.))
     "w2" w2
     (Connection.get_weight (Connection.set_weight cn2 w2))
@@ -109,10 +109,10 @@ let n_id () =
   let nd2 = Node.init id2 Node.Bias in
   let nd3 = Node.init id3 (Node.Hidden ly) in
   let nd4 = Node.init id4 Node.Output in
-  Format.printf "nd1: %a@." Node.pp nd1;
-  Format.printf "nd2: %a@." Node.pp nd2;
-  Format.printf "nd3: %a@." Node.pp nd3;
-  Format.printf "nd4: %a@." Node.pp nd4;
+  (* Format.printf "nd1: %a@." Node.pp nd1; *)
+  (* Format.printf "nd2: %a@." Node.pp nd2; *)
+  (* Format.printf "nd3: %a@." Node.pp nd3; *)
+  (* Format.printf "nd4: %a@." Node.pp nd4; *)
   Alcotest.(check int) "id1" id1 (Node.get_id nd1);
   Alcotest.(check int) "id2" id2 (Node.get_id nd2);
   Alcotest.(check int) "id3" id3 (Node.get_id nd3);
@@ -129,11 +129,11 @@ let n_ly () =
   let nd2 = Node.init id2 Node.Bias in
   let nd3 = Node.init id3 (Node.Hidden ly) in
   let nd4 = Node.init id4 Node.Output in
-  Format.printf "nd1: %a@." Node.pp nd1;
-  Format.printf "nd2: %a@." Node.pp nd2;
-  Format.printf "nd3: %a@." Node.pp nd3;
-  Format.printf "inc: %a@." Node.pp (Node.inc_layer nd3);
-  Format.printf "nd4: %a@." Node.pp nd4;
+  (* Format.printf "nd1: %a@." Node.pp nd1; *)
+  (* Format.printf "nd2: %a@." Node.pp nd2; *)
+  (* Format.printf "nd3: %a@." Node.pp nd3; *)
+  (* Format.printf "inc: %a@." Node.pp (Node.inc_layer nd3); *)
+  (* Format.printf "nd4: %a@." Node.pp nd4; *)
   Alcotest.(check int) "ly1" 0 (Node.get_layer nd1);
   Alcotest.(check int) "ly2" 0 (Node.get_layer nd2);
   Alcotest.(check int) "ly3" ly (Node.get_layer nd3);
@@ -156,11 +156,11 @@ let n_val () =
   let nd2 = Node.init ~value:val2 id2 Node.Bias in
   let nd3 = Node.init ~value:val3 id3 (Node.Hidden ly) in
   let nd4 = Node.init ~value:val4 id4 Node.Output in
-  Format.printf "nd1: %a@." Node.pp nd1;
-  Format.printf "nd2: %a@." Node.pp nd2;
-  Format.printf "nd3: %a@." Node.pp nd3;
-  Format.printf "nd4: %a@." Node.pp nd4;
-  Format.printf "set: %a@." Node.pp (Node.set_value nd4 val5);
+  (* Format.printf "nd1: %a@." Node.pp nd1; *)
+  (* Format.printf "nd2: %a@." Node.pp nd2; *)
+  (* Format.printf "nd3: %a@." Node.pp nd3; *)
+  (* Format.printf "nd4: %a@." Node.pp nd4; *)
+  (* Format.printf "set: %a@." Node.pp (Node.set_value nd4 val5); *)
   Alcotest.(check (float 0.)) "val1" val1 (Node.get_value nd1);
   Alcotest.(check (float 0.)) "val2" val2 (Node.get_value nd2);
   Alcotest.(check (float 0.)) "val3" val3 (Node.get_value nd3);
@@ -175,9 +175,38 @@ let n_val () =
 
 let g_init () =
   let open Neat in
-  let gn, _ = Genome.init ~st:!st 3 3 in
+  let gn1, st' = Genome.init ~st:!st 1 3 in
+  st := st';
+  let gn2, st' = Genome.init ~st:!st 3 1 in
+  st := st';
+  let gn3, st' = Genome.init ~st:!st ~bias:false 2 2 in
+  st := st';
+  Format.printf "gn: %a@." Genome.pp gn1;
+  Format.printf "gn: %a@." Genome.pp gn2;
+  Format.printf "gn: %a@." Genome.pp gn3;
+  Alcotest.(check bool) "printed" true true
+
+let g_add_node () =
+  let open Neat in
+  let gn, st' = Genome.init ~st:!st 1 2 in
+  st := st';
   Format.printf "gn: %a@." Genome.pp gn;
-  Alcotest.(check bool) "id1" true true
+  let gn, st' = Context.run (Genome.add_node gn) !st in
+  st := st';
+  Format.printf "gn: %a@." Genome.pp gn;
+  Alcotest.(check bool) "printed" true true
+
+let g_add_conn () =
+  let open Neat in
+  let open Context in
+  let gn, st' = Genome.init ~st:!st 1 2 in
+  st := st';
+  Format.printf "gn: %a@." Genome.pp gn;
+  let gn, st' = Context.run 
+  (Genome.add_connection gn) !st in
+  st := st';
+  Format.printf "gn: %a@." Genome.pp gn;
+  Alcotest.(check bool) "printed" true true
 
 (* genome *)
 
@@ -202,8 +231,8 @@ let () =
         ] );
       ( "genome",
         [
-          test_case "init" `Quick g_init;
-          (* test_case "layer" `Quick n_ly; *)
-          (* test_case "value" `Quick n_val; *)
+          (* test_case "init" `Quick g_init; *)
+          test_case "add node, update layers" `Quick g_add_node;
+          test_case "add connection" `Quick g_add_conn;
         ] );
     ]
