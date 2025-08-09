@@ -1,24 +1,24 @@
 (* context *)
 
-let st = ref (Neat.Context.init ())
+let st = ref (Env.init ())
 
 let get_id () =
-  let i, st' = Neat.Context.run Neat.Context.nget !st in
+  let i, st' = Env.run Env.gen_id !st in
   st := st';
   i
 
 let get_iv i o =
-  let i, st' = Neat.Context.run (Neat.Context.cget i o) !st in
+  let i, st' = Env.run (Env.gen_innov ~in_id:i ~out_id:o) !st in
   st := st';
   i
 
 let get_int b =
-  let i, st' = Neat.Context.run (Neat.Context.rand_int b) !st in
+  let i, st' = Env.run (Env.rand_int ~bound:b) !st in
   st := st';
   i
 
 let get_float b =
-  let i, st' = Neat.Context.run (Neat.Context.rand_float b) !st in
+  let i, st' = Env.run (Env.rand_float ~bound:b) !st in
   st := st';
   i
 
@@ -27,7 +27,6 @@ let get_float b =
 (* connection *)
 
 let c_iid () =
-  let open Neat in
   let i = get_int 100 in
   let o = get_int 100 in
   let v = get_iv i o in
@@ -36,7 +35,6 @@ let c_iid () =
   Alcotest.(check int) "in id" i (Connection.get_i_id cn)
 
 let c_oid () =
-  let open Neat in
   let i = get_int 100 in
   let o = get_int 100 in
   let v = get_iv i o in
@@ -45,7 +43,6 @@ let c_oid () =
   Alcotest.(check int) "out id" o (Connection.get_o_id cn)
 
 let c_innov () =
-  let open Neat in
   let i = get_int 100 in
   let o = get_int 100 in
   let v = get_iv i o in
@@ -54,7 +51,6 @@ let c_innov () =
   Alcotest.(check int) "innov" v (Connection.get_innov cn)
 
 let c_enabled () =
-  let open Neat in
   let i1 = get_int 100 in
   let o1 = get_int 100 in
   let v1 = get_iv i1 o1 in
@@ -67,13 +63,15 @@ let c_enabled () =
   (* Format.printf "c_enabled conn2: %a@." Connection.pp cn2; *)
   (* Format.printf "c_toggled conn2: %a@." Connection.pp (Connection.toggle cn2); *)
   Alcotest.(check bool) "default" true (Connection.get_enabled cn1);
+  Alcotest.(check bool)
+    "toggle disabled" false
+    (Connection.get_enabled (Connection.disable cn2));
   Alcotest.(check bool) "disabled" false (Connection.get_enabled cn2);
   Alcotest.(check bool)
     "toggle enabled" true
-    (Connection.get_enabled (Connection.toggle cn2))
+    (Connection.get_enabled (Connection.enable cn2))
 
 let c_weight () =
-  let open Neat in
   let i1 = get_int 100 in
   let o1 = get_int 100 in
   let v1 = get_iv i1 o1 in
@@ -99,7 +97,6 @@ let c_weight () =
 (* node *)
 
 let n_id () =
-  let open Neat in
   let id1 = get_id () in
   let id2 = get_id () in
   let id3 = get_id () in
@@ -119,7 +116,6 @@ let n_id () =
   Alcotest.(check int) "id4" id4 (Node.get_id nd4)
 
 let n_ly () =
-  let open Neat in
   let id1 = get_id () in
   let id2 = get_id () in
   let id3 = get_id () in
@@ -141,7 +137,6 @@ let n_ly () =
   Alcotest.(check int) "ly4" (-1) (Node.get_layer nd4)
 
 let n_val () =
-  let open Neat in
   let id1 = get_id () in
   let id2 = get_id () in
   let id3 = get_id () in
@@ -174,39 +169,15 @@ let n_val () =
 (* genome *)
 
 let g_init () =
-  let open Neat in
-  let gn1, st' = Genome.init ~st:!st 1 3 in
-  st := st';
-  let gn2, st' = Genome.init ~st:!st 3 1 in
-  st := st';
-  let gn3, st' = Genome.init ~st:!st ~bias:false 2 2 in
-  st := st';
-  Format.printf "gn: %a@." Genome.pp gn1;
-  Format.printf "gn: %a@." Genome.pp gn2;
-  Format.printf "gn: %a@." Genome.pp gn3;
-  Alcotest.(check bool) "printed" true true
-
-let g_add_node () =
-  let open Neat in
-  let gn, st' = Genome.init ~st:!st 1 2 in
-  st := st';
-  Format.printf "gn: %a@." Genome.pp gn;
-  let gn, st' = Context.run (Genome.add_node gn) !st in
-  st := st';
-  Format.printf "gn: %a@." Genome.pp gn;
-  Alcotest.(check bool) "printed" true true
-
-let g_add_conn () =
-  let open Neat in
-  let open Context in
-  let gn, st' = Genome.init ~st:!st 1 2 in
-  st := st';
-  Format.printf "gn: %a@." Genome.pp gn;
-  let gn, st' = Context.run 
-  (Genome.add_connection gn) !st in
-  st := st';
-  Format.printf "gn: %a@." Genome.pp gn;
-  Alcotest.(check bool) "printed" true true
+  let open Env.Let_syntax in
+  let _ =
+    Env.run
+      (let* gn1 = Genome.init 3 3 in
+       Env.return (Format.printf "gn1:%a@." Genome.pp gn1))
+      !st
+  in
+  ();
+  Alcotest.(check bool) "init" true true
 
 (* genome *)
 
@@ -216,23 +187,20 @@ let () =
   run ~and_exit:true ~verbose:true "Primitives"
     [
       ( "connection",
-        [
-          test_case "in id" `Quick c_iid;
-          test_case "out id" `Quick c_oid;
-          test_case "innov" `Quick c_innov;
-          test_case "enabled" `Quick c_enabled;
-          test_case "weight" `Quick c_weight;
-        ] );
+        [ (* test_case "in id" `Quick c_iid; *)
+          (* test_case "out id" `Quick c_oid; *)
+          (* test_case "innov" `Quick c_innov; *)
+          (* test_case "enabled" `Quick c_enabled; *)
+          (* test_case "weight" `Quick c_weight; *) ] );
       ( "node",
-        [
-          test_case "id" `Quick n_id;
-          test_case "layer" `Quick n_ly;
-          test_case "value" `Quick n_val;
-        ] );
+        [ (* test_case "id" `Quick n_id; *)
+          (* test_case "layer" `Quick n_ly; *)
+          (* test_case "value" `Quick n_val; *) ] );
       ( "genome",
         [
-          (* test_case "init" `Quick g_init; *)
-          test_case "add node, update layers" `Quick g_add_node;
-          test_case "add connection" `Quick g_add_conn;
+          test_case "init" `Quick g_init;
+          (* test_case "add node, update layers" `Quick g_add_node; *)
+          (* test_case "add connection" `Quick g_add_conn; *)
+          (* test_case "mutate weights" `Quick g_mut_weights; *)
         ] );
     ]

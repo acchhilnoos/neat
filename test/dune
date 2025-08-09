@@ -2,4 +2,7 @@
  (name test_neat)
  (libraries 
    alcotest
-   neat))
+   connection
+   env
+   genome
+   node))
