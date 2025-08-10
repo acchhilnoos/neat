@@ -170,14 +170,30 @@ let n_val () =
 
 let g_init () =
   let open Env.Let_syntax in
-  let _ =
+  let _, st' =
     Env.run
       (let* gn1 = Genome.init 3 3 in
        Env.return (Format.printf "gn1:%a@." Genome.pp gn1))
       !st
   in
-  ();
+  st := st';
   Alcotest.(check bool) "init" true true
+
+(* let g_add_node () = *)
+(*   let open Env.Let_syntax in *)
+(*   let ( >>= ) = Env.( >>= ) in *)
+(*   let _, st' = *)
+(*     Env.run *)
+(*       (let* gn1 = *)
+(*          Genome.init 1 2 >>= Genome.add_node >>= Genome.add_node *)
+(*          >>= Genome.add_node >>= Genome.add_node >>= Genome.add_node *)
+(*          >>= Genome.add_node *)
+(*        in *)
+(*        Env.return (Format.printf "gn1:%a@." Genome.pp gn1)) *)
+(*       !st *)
+(*   in *)
+(*   st := st'; *)
+(*   Alcotest.(check bool) "init" true true *)
 
 (* genome *)
 
@@ -187,15 +203,19 @@ let () =
   run ~and_exit:true ~verbose:true "Primitives"
     [
       ( "connection",
-        [ (* test_case "in id" `Quick c_iid; *)
-          (* test_case "out id" `Quick c_oid; *)
-          (* test_case "innov" `Quick c_innov; *)
-          (* test_case "enabled" `Quick c_enabled; *)
-          (* test_case "weight" `Quick c_weight; *) ] );
+        [
+          test_case "in id" `Quick c_iid;
+          test_case "out id" `Quick c_oid;
+          test_case "innov" `Quick c_innov;
+          test_case "enabled" `Quick c_enabled;
+          test_case "weight" `Quick c_weight;
+        ] );
       ( "node",
-        [ (* test_case "id" `Quick n_id; *)
-          (* test_case "layer" `Quick n_ly; *)
-          (* test_case "value" `Quick n_val; *) ] );
+        [
+          test_case "id" `Quick n_id;
+          test_case "layer" `Quick n_ly;
+          test_case "value" `Quick n_val;
+        ] );
       ( "genome",
         [
           test_case "init" `Quick g_init;
