@@ -21,27 +21,26 @@ let copy { nodes; connections; fitness } =
   }
 
 let with_node nd gn =
-  let _ = Genome_Tbl.add gn.nodes (Node.get_id nd) nd in
+  Genome_Tbl.add gn.nodes (Node.get_id nd) nd;
   gn
 
 let update_node nd gn =
   let id = Node.get_id nd in
-  let _ = Genome_Tbl.replace gn.nodes id nd in
+  Genome_Tbl.replace gn.nodes id nd;
   gn
 
 let with_conn cn gn =
   let innov = Connection.get_innov cn in
-  let _ = Genome_Tbl.add gn.connections innov cn in
+  Genome_Tbl.add gn.connections innov cn;
   gn
 
 let update_conn cn gn =
   let innov = Connection.get_innov cn in
-  let _ = Genome_Tbl.replace gn.connections innov cn in
+  Genome_Tbl.replace gn.connections innov cn;
   gn
 
 let init ?(bias = true) ic oc =
   let open Env.Let_syntax in
-  let ( >> ) = Env.( >> ) in
   let gn = empty () in
   let* i_ls =
     List.fold_left
@@ -124,7 +123,29 @@ let make_scs gn =
   in
   scs
 
-let add_node gn scs =
+let mutate_weights p gn =
+  let open Env.Let_syntax in
+  Genome_Tbl.fold
+    (fun _ cn acc ->
+      acc
+      >>
+      let* ri = Env.rand_float ~bound:1. in
+      if ri < p then
+        let* rf = Env.rand_float ~bound:0.2 in
+        Env.return
+          (update_conn
+             (Connection.set_weight cn
+                (max (-1.) (min 1. (Connection.get_weight cn +. rf -. 0.1))))
+             gn)
+      else
+        let* rf = Env.rand_float ~bound:2. in
+        Env.return
+          (update_conn
+             (Connection.set_weight cn (Connection.get_weight cn +. rf -. 1.))
+             gn))
+    gn.connections (Env.return gn)
+
+let add_node scs gn =
   let open Env.Let_syntax in
   let* c_opt, _ =
     Genome_Tbl.fold
@@ -155,7 +176,7 @@ let add_node gn scs =
       |> update_layers (oi, il + 1) scs
       |> Env.return
 
-let add_connection ?(rand_its = 10) gn scs =
+let add_connection rand_its scs gn =
   let open Env.Let_syntax in
   let nds =
     Genome_Tbl.fold (fun id _ acc -> id :: acc) gn.nodes [] |> Array.of_list
@@ -165,21 +186,24 @@ let add_connection ?(rand_its = 10) gn scs =
     | Some z -> List.mem y z
     | None -> false
   in
+  let cond_do c a i o =
+    if gn_has i o || gn_has o i then a ()
+    else
+      let il = Node.get_layer (Genome_Tbl.find gn.nodes i) in
+      let ol = Node.get_layer (Genome_Tbl.find gn.nodes o) in
+      if il = ol then a ()
+      else if (il < ol && il <> -1) || ol = -1 then c i o
+      else if (ol < il && ol <> -1) || il = -1 then c o i
+      else a ()
+  in
   let rec rand n =
     if n = 0 then Env.return None
     else
       let* i = Env.rand_int ~bound:(Array.length nds) in
-      let i = nds.(i) in
       let* o = Env.rand_int ~bound:(Array.length nds) in
+      let i = nds.(i) in
       let o = nds.(o) in
-      if gn_has i o || gn_has o i then rand (n - 1)
-      else
-        let il = Node.get_layer (Genome_Tbl.find gn.nodes i) in
-        let ol = Node.get_layer (Genome_Tbl.find gn.nodes o) in
-        if il = ol then rand (n - 1)
-        else if (il < ol && il <> -1) || ol = -1 then Env.return (Some (i, o))
-        else if (ol < il && ol <> -1) || il = -1 then Env.return (Some (o, i))
-        else rand (n - 1)
+      cond_do (fun x y -> Env.return (Some (x, y))) (fun () -> rand (n - 1)) i o
   in
   let enum () =
     let free =
@@ -187,14 +211,7 @@ let add_connection ?(rand_its = 10) gn scs =
         (fun acc i ->
           Array.fold_left
             (fun acc' o ->
-              if gn_has i o || gn_has o i then acc'
-              else
-                let il = Node.get_layer (Genome_Tbl.find gn.nodes i) in
-                let ol = Node.get_layer (Genome_Tbl.find gn.nodes o) in
-                if il = ol then acc'
-                else if (il < ol && il <> -1) || ol = -1 then (i, o) :: acc'
-                else if (ol < il && ol <> -1) || il = -1 then (o, i) :: acc'
-                else acc')
+              cond_do (fun x y -> (x, y) :: acc') (fun () -> acc') i o)
             acc nds)
         [] nds
       |> Array.of_list
@@ -217,28 +234,16 @@ let add_connection ?(rand_its = 10) gn scs =
           Env.return (with_conn (Connection.init x y iv) gn)
       | None -> Env.return gn)
 
-let mutate_weights gn =
+let mutate ?(w = 0.8) ?(wp = 0.9) ?(nn = 0.03) ?(nc = 0.05) ?(ri = 10) gn =
   let open Env.Let_syntax in
-  let ( >> ) = Env.( >> ) in
-  Genome_Tbl.fold
-    (fun _ cn acc ->
-      acc
-      >>
-      let* ri = Env.rand_int ~bound:10 in
-      if ri < 9 then
-        let* rf = Env.rand_float ~bound:0.2 in
-        Env.return
-          (update_conn
-             (Connection.set_weight cn
-                (max (-1.) (min 1. (Connection.get_weight cn +. rf -. 0.1))))
-             gn)
-      else
-        let* rf = Env.rand_float ~bound:2. in
-        Env.return
-          (update_conn
-             (Connection.set_weight cn (Connection.get_weight cn +. rf -. 1.))
-             gn))
-    gn.connections (Env.return gn)
+  let* w' = Env.rand_float ~bound:1. in
+  let* nn' = Env.rand_float ~bound:1. in
+  let* nc' = Env.rand_float ~bound:1. in
+  (if w' < w then mutate_weights wp else Env.return) gn
+  >>= (if nn' < nn then fun gn' -> add_node (make_scs gn') gn' else Env.return)
+  >>=
+  if nc' < nc then fun gn' -> add_connection ri (make_scs gn') gn'
+  else Env.return
 
 let pp_list ?(pp_sep = fun fmt () -> Format.fprintf fmt ";@   ") pp_item fmt xs
     =

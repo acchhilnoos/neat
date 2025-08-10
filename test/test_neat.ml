@@ -179,21 +179,82 @@ let g_init () =
   st := st';
   Alcotest.(check bool) "init" true true
 
-(* let g_add_node () = *)
-(*   let open Env.Let_syntax in *)
-(*   let ( >>= ) = Env.( >>= ) in *)
-(*   let _, st' = *)
-(*     Env.run *)
-(*       (let* gn1 = *)
-(*          Genome.init 1 2 >>= Genome.add_node >>= Genome.add_node *)
-(*          >>= Genome.add_node >>= Genome.add_node >>= Genome.add_node *)
-(*          >>= Genome.add_node *)
-(*        in *)
-(*        Env.return (Format.printf "gn1:%a@." Genome.pp gn1)) *)
-(*       !st *)
-(*   in *)
-(*   st := st'; *)
-(*   Alcotest.(check bool) "init" true true *)
+let g_add_node () =
+  let open Env.Let_syntax in
+  let _, st' =
+    Env.run
+      (let* gn = Genome.init 1 2 in
+       let* gn =
+         Format.printf "gn:%a@." Genome.pp gn;
+         Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0. gn
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+       in
+       Env.return (Format.printf "gn:%a@." Genome.pp gn))
+      !st
+  in
+  st := st';
+  Alcotest.(check bool) "add_node" true true
+
+let g_add_conn () =
+  let open Env.Let_syntax in
+  let _, st' =
+    Env.run
+      (let* gn = Genome.init 1 2 in
+       let* gn =
+         Format.printf "gn:%a@." Genome.pp gn;
+         Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0. gn
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:0. ~nc:1.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:0. ~nc:1.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:0. ~nc:1.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:0. ~nc:1.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:0. ~nc:1.
+       in
+       Env.return (Format.printf "gn:%a@." Genome.pp gn))
+      !st
+  in
+  st := st';
+  Alcotest.(check bool) "add_conn" true true
+
+let g_mut_weights () =
+  let open Env.Let_syntax in
+  let _, st' =
+    Env.run
+      (let* gn = Genome.init 1 2 in
+       let* gn =
+         Format.printf "gn:%a@." Genome.pp gn;
+         Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0. gn
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:1. ~nc:0.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:0. ~nc:1.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:0. ~nc:1.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:0. ~nc:1.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:0. ~nc:1.
+         >>= Genome.mutate ~w:0. ~wp:0. ~nn:0. ~nc:1.
+         >>= Genome.mutate ~w:1. ~wp:0.8 ~nn:0. ~nc:0.
+         >>= Genome.mutate ~w:1. ~wp:0.8 ~nn:0. ~nc:0.
+         >>= Genome.mutate ~w:1. ~wp:0.8 ~nn:0. ~nc:0.
+         >>= Genome.mutate ~w:1. ~wp:0.8 ~nn:0. ~nc:0.
+         >>= Genome.mutate ~w:1. ~wp:0.8 ~nn:0. ~nc:0.
+         >>= Genome.mutate ~w:1. ~wp:0.8 ~nn:0. ~nc:0.
+         >>= Genome.mutate ~w:1. ~wp:0.8 ~nn:0. ~nc:0.
+         >>= Genome.mutate ~w:1. ~wp:0.8 ~nn:0. ~nc:0.
+         >>= Genome.mutate ~w:1. ~wp:0.8 ~nn:0. ~nc:0.
+         >>= Genome.mutate ~w:1. ~wp:0.8 ~nn:0. ~nc:0.
+       in
+       Env.return (Format.printf "gn:%a@." Genome.pp gn))
+      !st
+  in
+  st := st';
+  Alcotest.(check bool) "mut_weights" true true
 
 (* genome *)
 
@@ -219,8 +280,8 @@ let () =
       ( "genome",
         [
           test_case "init" `Quick g_init;
-          (* test_case "add node, update layers" `Quick g_add_node; *)
-          (* test_case "add connection" `Quick g_add_conn; *)
-          (* test_case "mutate weights" `Quick g_mut_weights; *)
+          test_case "add node, update layers" `Quick g_add_node;
+          test_case "add connection" `Quick g_add_conn;
+          test_case "mutate weights" `Quick g_mut_weights;
         ] );
     ]

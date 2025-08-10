@@ -38,19 +38,17 @@ type 'a t = c -> 'a * c
 
 let init () = (Cstate.empty, Nstate.empty, Random.State.make [| 633397 |])
 let return x env = (x, env)
-let get env = (env, env)
-let set env _ = ((), env)
 let run m env = m env
 
-let ( >> ) m n env =
-  let _, env' = m env in
-  n env'
-
-let ( >>= ) m f env =
-  let n, env' = m env in
-  f n env'
-
 module Let_syntax = struct
+  let ( >> ) m n env =
+    let _, env' = m env in
+    n env'
+
+  let ( >>= ) m f env =
+    let n, env' = m env in
+    f n env'
+
   let ( let* ) = ( >>= )
 end
 
